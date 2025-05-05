@@ -1,0 +1,103 @@
+<sdf version="1.7">
+  <model name="drop_box">
+    <static>true</static>
+    <link name="link">
+
+      <!-- Bottom panel -->
+      <visual name="bottom_visual">
+        <pose>0 0 -0.24 0 0 0</pose>  <!-- lower by half the total height minus half thickness -->
+        <geometry>
+          <box>
+            <size>0.5 0.5 0.02</size>  <!-- width, depth, thickness -->
+          </box>
+        </geometry>
+        <material><ambient>0 0 1 1</ambient></material>
+      </visual>
+      <collision name="bottom_collision">
+        <pose>0 0 -0.24 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.5 0.02</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Front wall -->
+      <visual name="front_visual">
+        <pose>0 0.24 0 0 0 0</pose>  <!-- y = half-depth minus half-thickness -->
+        <geometry>
+          <box>
+            <size>0.5 0.02 0.5</size>  <!-- width, thickness, height -->
+          </box>
+        </geometry>
+        <material><ambient>0 0 1 1</ambient></material>
+      </visual>
+      <collision name="front_collision">
+        <pose>0 0.24 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.02 0.5</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Back wall -->
+      <visual name="back_visual">
+        <pose>0 -0.24 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.02 0.5</size>
+          </box>
+        </geometry>
+        <material><ambient>0 0 1 1</ambient></material>
+      </visual>
+      <collision name="back_collision">
+        <pose>0 -0.24 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.02 0.5</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Left wall -->
+      <visual name="left_visual">
+        <pose>0.24 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.5 0.5</size>
+          </box>
+        </geometry>
+        <material><ambient>0 0 1 1</ambient></material>
+      </visual>
+      <collision name="left_collision">
+        <pose>0.24 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.5 0.5</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Right wall -->
+      <visual name="right_visual">
+        <pose>-0.24 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.5 0.5</size>
+          </box>
+        </geometry>
+        <material><ambient>0 0 1 1</ambient></material>
+      </visual>
+      <collision name="right_collision">
+        <pose>-0.24 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.5 0.5</size>
+          </box>
+        </geometry>
+      </collision>
+
+    </link>
+  </model>
+</sdf>
