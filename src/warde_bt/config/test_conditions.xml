@@ -1,0 +1,8 @@
+<root main_tree_to_execute="TestTree">
+    <BehaviorTree ID="TestTree">
+        <Sequence name="CheckBoth">
+            <ConditionBoxPresent name="BoxPresent" box_frame="box_frame" />
+            <ConditionBeerPresent name="BeerAvail" beer_frames="beer_frames" />
+        </Sequence>
+    </BehaviorTree>
+</root>
