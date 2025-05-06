@@ -1,0 +1,48 @@
+<root main_tree_to_execute="MainTree">
+    <BehaviorTree ID="MainTree">
+        <DecoratorLoop num_cycles="-1">
+            <Fallback name="MissionFallback">
+                <!-- Need a box and at least one beer -->
+                <Sequence name="CheckAndFetch">
+                    <ConditionBoxPresent name="BoxPresent" output_key="box_frame" />
+                    <ConditionBeerAvailable name="BeerAvailable" output_key="beer_frames" />
+                    <ActionGetClosestBeer name="ChooseBeer" beers_bb_key="beer_frames" output_key="target_beer_frame" />
+                    <!-- Picking subtree -->
+                    <SubTree ID="GraspBeer" />
+                    <!-- Placing subtree -->
+                    <SubTree ID="PlaceBeer" />
+                </Sequence>
+                <!-- Fallback action -->
+                <ActionWander name="Wander" />
+            </Fallback>
+        </DecoratorLoop>
+    </BehaviorTree>
+
+    <!-- GraspBeer Subtree -->
+    <BehaviorTree ID="GraspBeer">
+        <Sequence name="GraspBeerSeq">
+            <!-- Approach from a safe “pre‐grasp” offset frame -->
+            <ActionNavigateToTarget name="ApproachBeer" frame="{target_beer_frame}_pregrasp" />
+            <!-- Move in for grasping -->
+            <ActionNavigateToTarget name="GoToBeer" frame="{target_beer_frame}" />
+            <!-- Close the gripper -->
+            <ActionGripperClose name="CloseGripper" />
+            <!-- Stow the arm for safe travel -->
+            <ActionStowArm name="StowArm" />
+        </Sequence>
+    </BehaviorTree>
+
+    <!-- PlaceBeer Subtree -->
+    <BehaviorTree ID="PlaceBeer">
+        <Sequence name="PlaceBeerSeq">
+            <!-- Approach from a safe offset above the box -->
+            <ActionNavigateToTarget name="ApproachBox" frame="{box_frame}_preplace" />
+            <!-- Move in to box space -->
+            <ActionNavigateToTarget name="GoToBox" frame="{box_frame}" />
+            <!-- Open the gripper -->
+            <ActionGripperOpen name="OpenGripper" />
+            <!-- Stow the arm again -->
+            <ActionStowArm name="StowArm" />
+        </Sequence>
+    </BehaviorTree>
+</root>
