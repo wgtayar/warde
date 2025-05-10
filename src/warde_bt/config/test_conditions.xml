@@ -3,6 +3,8 @@
         <Sequence name="CheckBoth">
             <ConditionBoxPresent name="BoxPresent" box_frame="box_frame" />
             <ConditionBeerPresent name="BeerAvail" beer_frames="beer_frames" />
+            <ActionGetClosestBeer name="ClosestBeer" beer_frames="{beer_frames}"
+                target_beer_frame="{target_beer_frame}" />
         </Sequence>
     </BehaviorTree>
 </root>
