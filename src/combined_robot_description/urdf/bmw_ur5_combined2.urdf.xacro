@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="bmw_ur5_combined">
+
+  <!-- Include the BMW base -->
+  <xacro:include filename="/home/christopher/warde/src/ROS2_4wheel_autonomous_robot/src/robot_description/urdf/inc/bmw_macro.xacro"/>
+  <xacro:bmw_car prefix="bmw_"/>
+  
+  <xacro:include filename="/home/christopher/warde/src/Universal_Robots_ROS2_Description/urdf/ur_macro.xacro"/>
+  
+
+
+  <!-- instantiate a UR5, parented to the BMW’s chassis link, 0.3 m above it -->
+  <xacro:ur_robot
+    name="ur5"
+    tf_prefix="ur5_"
+    parent="chassis"
+    
+    joint_limits_parameters_file="$(find ur_description)/config/ur5/joint_limits.yaml"  
+    kinematics_parameters_file="$(find ur_description)/config/ur5/default_kinematics.yaml"  
+    physical_parameters_file="$(find ur_description)/config/ur5/physical_parameters.yaml"  
+    visual_parameters_file="$(find ur_description)/config/ur5/visual_parameters.yaml"  
+
+    use_fake_hardware="true"
+    fake_sensor_commands="true"
+    sim_gazebo="true"
+
+    generate_ros2_control_tag="true">
+    <origin xyz="-0.18 0 0.225" rpy="0 0 0"/>
+    </xacro:ur_robot>
+  
+
+  
+</robot>
