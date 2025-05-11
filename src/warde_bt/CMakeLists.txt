@@ -12,7 +12,7 @@ find_package(gazebo_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(std_srvs REQUIRED)
-find_package(manipulation_msgs REQUIRED)
+# find_package(manipulation_msgs REQUIRED)
 find_package(robot_nav REQUIRED)
 
 
@@ -29,11 +29,13 @@ add_executable(test_conditions src/test_condition.cpp
   src/condition_beer_present.cpp
   src/action_get_closest_beer.cpp
   src/action_navigate.cpp
-  src/action_manipulate.cpp
+  # src/action_manipulate.cpp
 )
 ament_target_dependencies(test_conditions
-  rclcpp behaviortree_cpp_v3 tf2_ros ament_index_cpp manipulation_msgs robot_nav
-)
+  rclcpp behaviortree_cpp_v3 tf2_ros ament_index_cpp robot_nav
+) 
+
+# !!!!!!!!!!!!!!!!!!!!!!! also add manipulation_msgs later !!!!!!!!!!!!!!!!!!!!!!!!!
 
 install(TARGETS test_conditions
   DESTINATION lib/${PROJECT_NAME}
@@ -67,7 +69,7 @@ install(TARGETS bt_get_closest_beer
   LIBRARY DESTINATION lib/${PROJECT_NAME}
   RUNTIME DESTINATION lib/${PROJECT_NAME})
 
-install(TARGETS bt_navigate_warde
+install(TARGETS bt_navigate
   LIBRARY DESTINATION lib/${PROJECT_NAME}
 )
 
