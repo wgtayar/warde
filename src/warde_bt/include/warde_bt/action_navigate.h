@@ -3,7 +3,7 @@
 
 #include <behaviortree_cpp_v3/action_node.h>
 #include <rclcpp/rclcpp.hpp>
-#include <robot_nav/srv/navigate.h>
+#include <robot_nav/srv/navigate.hpp>
 
 namespace warde_bt
 {

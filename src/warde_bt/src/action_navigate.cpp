@@ -6,13 +6,6 @@ using namespace std::chrono_literals;
 
 namespace warde_bt
 {
-    BT::PortsList ActionNavigate::providedPorts()
-    {
-        return {
-            BT::InputPort<bool>("wander", true, "whether to wander or not; default true"),
-            BT::InputPort<std::string>("target_frame", "", "target frame for navigation; default empty")};
-    }
-
     ActionNavigate::ActionNavigate(
         const std::string &name,
         const BT::NodeConfiguration &config)
@@ -24,25 +17,34 @@ namespace warde_bt
 
     BT::NodeStatus ActionNavigate::onStart()
     {
-        bool wander_flag = true;
-        getInput("wander", wander_flag);
-
-        std::string target;
-        getInput("target_frame", target);
-
         if (!navigate_client_->wait_for_service(1s))
         {
             RCLCPP_ERROR(node_->get_logger(), "navigate service unavailable");
             return BT::NodeStatus::FAILURE;
         }
 
+        bool wander = true;
+        getInput("wander", wander);
+
+        std::string target;
+        getInput("target_frame", target);
+
         auto req = std::make_shared<robot_nav::srv::Navigate::Request>();
-        req->wander = wander_flag;
+        req->wander = wander;
         req->target_frame = target;
 
-        navigate_client_->async_send_request(req);
-        active_ = true;
-        return BT::NodeStatus::RUNNING;
+        auto result_future = navigate_client_->async_send_request(req);
+        auto status = rclcpp::spin_until_future_complete(node_, result_future);
+
+        if (status == rclcpp::FutureReturnCode::SUCCESS && result_future.get()->success)
+        {
+            return BT::NodeStatus::SUCCESS;
+        }
+        else
+        {
+            RCLCPP_ERROR(node_->get_logger(), "navigate call failed or timed out");
+            return BT::NodeStatus::FAILURE;
+        }
     }
 
     BT::NodeStatus ActionNavigate::onRunning()
