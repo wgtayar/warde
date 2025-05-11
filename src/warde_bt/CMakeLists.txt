@@ -24,7 +24,8 @@ include_directories(include
 # CREATE AN EXECUTABLE FOR THE WARDE TREE AND ITS CORRESPONDING AMENT TARGET DEPENDENCIES AND INSTALL TARGETS
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-add_executable(test_conditions src/test_condition.cpp
+add_executable(test_conditions
+  src/test_condition.cpp
   src/condition_box_present.cpp
   src/condition_beer_present.cpp
   src/action_get_closest_beer.cpp
@@ -33,7 +34,7 @@ add_executable(test_conditions src/test_condition.cpp
 )
 ament_target_dependencies(test_conditions
   rclcpp behaviortree_cpp_v3 tf2_ros ament_index_cpp robot_nav
-) 
+)
 
 # !!!!!!!!!!!!!!!!!!!!!!! also add manipulation_msgs later !!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -62,6 +63,7 @@ ament_target_dependencies(bt_navigate
   rclcpp
   std_srvs
   behaviortree_cpp_v3
+  robot_nav
 )
 
 install(TARGETS bt_get_closest_beer
