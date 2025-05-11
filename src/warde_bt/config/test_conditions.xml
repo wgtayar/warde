@@ -1,10 +1,27 @@
 <root main_tree_to_execute="TestTree">
     <BehaviorTree ID="TestTree">
-        <Sequence name="CheckBoth">
-            <ConditionBoxPresent name="BoxPresent" box_frame="box_frame" />
-            <ConditionBeerPresent name="BeerAvail" beer_frames="beer_frames" />
-            <ActionGetClosestBeer name="ClosestBeer" beer_frames="{beer_frames}"
+        <Sequence name="CheckAndPickAndNavigate">
+            <!-- 1) Check for a box; writes “box_frame” -->
+            <ConditionBoxPresent
+                name="BoxPresent"
+                box_frame="{box_frame}" />
+
+            <!-- 2) Find all beers; writes vector “beer_frames” -->
+            <ConditionBeerPresent
+                name="BeerPresent"
+                beer_frames="{beer_frames}" />
+
+            <!-- 3) Choose closest; reads “beer_frames”, writes “target_beer_frame” -->
+            <ActionGetClosestBeer
+                name="GetClosestBeer"
+                beer_frames="{beer_frames}"
                 target_beer_frame="{target_beer_frame}" />
+
+            <!-- 4) Navigate to that beer frame -->
+            <ActionNavigate
+                name="NavigateToBeer"
+                wander="false"
+                target_frame="{target_beer_frame}" />
         </Sequence>
     </BehaviorTree>
-</root>
+</root>  
