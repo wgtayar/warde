@@ -1,71 +1,78 @@
 #include "warde_bt/action_navigate.h"
-#include <behaviortree_cpp_v3/bt_factory.h>
 #include <chrono>
-
 using namespace std::chrono_literals;
 
 namespace warde_bt
 {
+
     ActionNavigate::ActionNavigate(
         const std::string &name,
-        const BT::NodeConfiguration &config)
-        : BT::StatefulActionNode(name, config)
+        const BT::NodeConfiguration &cfg)
+        : BT::StatefulActionNode(name, cfg)
     {
         node_ = rclcpp::Node::make_shared("bt_navigate_client");
-        navigate_client_ = node_->create_client<robot_nav::srv::Navigate>("navigate", rmw_qos_profile_services_default);
+        client_ = rclcpp_action::create_client<Navigate>(node_, "navigate");
     }
 
     BT::NodeStatus ActionNavigate::onStart()
     {
-        if (!navigate_client_->wait_for_service(1s))
+        if (!client_->wait_for_action_server(1s))
         {
-            RCLCPP_ERROR(node_->get_logger(), "navigate service unavailable");
+            RCLCPP_ERROR(node_->get_logger(), "Navigate action not available");
             return BT::NodeStatus::FAILURE;
         }
-
-        bool wander = true;
+        bool wander;
         getInput("wander", wander);
-
         std::string target;
         getInput("target_frame", target);
 
-        auto req = std::make_shared<robot_nav::srv::Navigate::Request>();
-        req->wander = wander;
-        req->target_frame = target;
+        Navigate::Goal goal_msg;
+        goal_msg.wander = wander;
+        goal_msg.target_frame = target;
 
-        auto result_future = navigate_client_->async_send_request(req);
-        auto status = rclcpp::spin_until_future_complete(node_, result_future);
-
-        if (status == rclcpp::FutureReturnCode::SUCCESS && result_future.get()->success)
-        {
-            return BT::NodeStatus::SUCCESS;
-        }
-        else
-        {
-            RCLCPP_ERROR(node_->get_logger(), "navigate call failed or timed out");
-            return BT::NodeStatus::FAILURE;
-        }
+        gh_future_ = client_->async_send_goal(goal_msg);
+        active_ = true;
+        return BT::NodeStatus::RUNNING;
     }
 
     BT::NodeStatus ActionNavigate::onRunning()
     {
+        if (!active_)
+            return BT::NodeStatus::FAILURE;
+
+        if (!goal_handle_ &&
+            gh_future_.valid() &&
+            gh_future_.wait_for(0s) == std::future_status::ready)
+        {
+            goal_handle_ = gh_future_.get();
+            if (!goal_handle_)
+            {
+                RCLCPP_ERROR(node_->get_logger(), "Navigate goal was rejected");
+                return BT::NodeStatus::FAILURE;
+            }
+        }
+
+        if (goal_handle_)
+        {
+            auto result_future = client_->async_get_result(goal_handle_);
+            if (result_future.wait_for(0s) == std::future_status::ready)
+            {
+                auto res = result_future.get().result;
+                return res->success ? BT::NodeStatus::SUCCESS
+                                    : BT::NodeStatus::FAILURE;
+            }
+        }
+
         return BT::NodeStatus::RUNNING;
     }
 
     void ActionNavigate::onHalted()
     {
-        if (active_)
+        if (active_ && goal_handle_)
         {
-            auto req = std::make_shared<robot_nav::srv::Navigate::Request>();
-            req->wander = false;
-            req->target_frame = "";
-            navigate_client_->async_send_request(req);
-            active_ = false;
+            client_->async_cancel_goal(goal_handle_);
         }
+        active_ = false;
     }
-}
 
-// BT_REGISTER_NODES(factory)
-// {
-//     factory.registerNodeType<warde_bt::ActionNavigate>("ActionNavigate");
-// }
+} // namespace warde_bt

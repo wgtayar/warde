@@ -3,20 +3,24 @@
 
 #include <behaviortree_cpp_v3/action_node.h>
 #include <rclcpp/rclcpp.hpp>
-#include <robot_nav/srv/navigate.hpp>
+#include <rclcpp_action/rclcpp_action.hpp>
+#include "robot_nav/action/navigate.hpp"
 
 namespace warde_bt
 {
 
+    using Navigate = robot_nav::action::Navigate;
+    using GoalHandle = rclcpp_action::ClientGoalHandle<Navigate>;
+
     class ActionNavigate : public BT::StatefulActionNode
     {
     public:
-        ActionNavigate(const std::string &name, const BT::NodeConfiguration &config);
+        ActionNavigate(const std::string &name, const BT::NodeConfiguration &cfg);
 
         static BT::PortsList providedPorts()
         {
             return {
-                BT::InputPort<bool>("wander", "true=aimless wander; false=go to target_frame"),
+                BT::InputPort<bool>("wander", "true=roam; false=go to target_frame"),
                 BT::InputPort<std::string>("target_frame", "TF frame to navigate to")};
         }
 
@@ -26,10 +30,11 @@ namespace warde_bt
 
     private:
         rclcpp::Node::SharedPtr node_;
-        rclcpp::Client<robot_nav::srv::Navigate>::SharedPtr navigate_client_;
+        rclcpp_action::Client<Navigate>::SharedPtr client_;
+        std::shared_future<GoalHandle::SharedPtr> gh_future_;
+        GoalHandle::SharedPtr goal_handle_;
         bool active_{false};
     };
 
-}
-
+} // namespace warde_bt
 #endif // WARDE_BT__ACTION_NAVIGATE_H_
