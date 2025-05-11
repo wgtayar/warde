@@ -35,12 +35,7 @@ namespace warde_bt
         {
             try
             {
-                // timeout 0.5s
-                auto tf = buffer_->lookupTransform(
-                    "chassis",
-                    frame,
-                    rclcpp::Time(0, 0, RCL_ROS_TIME),
-                    rclcpp::Duration::from_seconds(0.5));
+                auto tf = buffer_->lookupTransform("odom", frame, rclcpp::Time(0, 0, RCL_ROS_TIME), rclcpp::Duration::from_seconds(0.5));
 
                 double x = tf.transform.translation.x;
                 double y = tf.transform.translation.y;
