@@ -21,7 +21,7 @@ def generate_launch_description():
             PathJoinSubstitution([
                 FindPackageShare("combined_robot_description"),
                 "urdf",
-                "bmw_ur5_combined.urdf.xacro"
+                "bmw_ur5_gripper_combined.urdf.xacro"
             ]),
             " ",
             "ur_type:=ur5",

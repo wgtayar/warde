@@ -6,6 +6,8 @@
   <xacro:bmw_car prefix="bmw_"/>
   
   <xacro:include filename="/home/christopher/warde/src/Universal_Robots_ROS2_Description/urdf/ur_macro.xacro"/>
+
+  <xacro:include filename="/home/christopher/warde/src/ros2_robotiq_gripper/robotiq_description/urdf/robotiq_2f_140_macro.urdf.xacro"/>
   
 
 
@@ -28,6 +30,14 @@
     <origin xyz="-0.18 0 0.225" rpy="0 0 0"/>
     </xacro:ur_robot>
   
+  <xacro:robotiq_gripper
+    name="robotiq_2f_140"            
+    prefix="gripper_"                 
+    parent="ur5_wrist_3_link"         
+    use_fake_hardware="true"          
+    include_ros2_control="true"> 
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+    </xacro:robotiq_gripper>
 
   
 </robot>

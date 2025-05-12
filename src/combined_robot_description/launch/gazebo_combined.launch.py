@@ -1,50 +1,56 @@
 from launch import LaunchDescription
+from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
-from launch.substitutions import Command, PathJoinSubstitution
+from launch.substitutions import (
+    Command,
+    PathJoinSubstitution,
+)
 from launch_ros.substitutions import FindPackageShare
+from launch.substitutions import FindExecutable
 
 def generate_launch_description():
-    # 1) Generate the robot_description parameter by calling xacro correctly
-    robot_description_content = Command([
-        "xacro",
-        PathJoinSubstitution([
-            FindPackageShare("combined_robot_description"),
-            "urdf",
-            "bmw_ur5_combined.urdf.xacro"
-        ])
-    ])
-
-    # 2) Include the standard Gazebo launch (with ROS2 plugins)
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare("gazebo_ros"),
-                "launch",
-                "gazebo.launch.py"
-            ])
-        ]),
-        launch_arguments={"verbose": "true"}.items()
-    )
-
-    spawn_entity = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
-        arguments=["-topic", "robot_description", "-entity", "bmw_ur5_combined"],
-        output="screen",
-    )
-
-    rsp = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        name="robot_state_publisher",
-        output="screen",
-        parameters=[{"robot_description": robot_description_content}],
-    )
-
     return LaunchDescription([
-        gazebo_launch,
-        rsp,
-        spawn_entity,
+        Node(
+    package="robot_state_publisher",
+    executable="robot_state_publisher",
+    parameters=[{
+        "use_sim_time": True,
+        "robot_description": Command([
+            PathJoinSubstitution([FindExecutable(name="xacro")]), " ",
+            PathJoinSubstitution([
+                FindPackageShare("combined_robot_description"),
+                "urdf",
+                "bmw_ur5_combined.urdf.xacro"
+            ]),
+            " ",
+            "ur_type:=ur5",
+            " ",
+            "name:=ur5",
+            " ",
+            "tf_prefix:=ur5_"
+        ])
+    }],
+    output="screen"
+),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare("gazebo_ros"),
+                    "launch",
+                    "gazebo.launch.py"
+                ])
+            ])
+        ),
+
+        Node(
+            package="gazebo_ros",
+            executable="spawn_entity.py",
+            arguments=[
+                "-entity", "bmw_ur5_combined",
+                "-topic", "robot_description"
+            ],
+            output="screen"
+        )
     ])
