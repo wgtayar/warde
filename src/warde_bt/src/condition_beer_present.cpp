@@ -22,9 +22,13 @@ namespace warde_bt
         }
 
         if (beers.empty())
+        {
+            RCLCPP_WARN(rclcpp::get_logger("ConditionBeerPresent"), "No beer frames found");
             return BT::NodeStatus::FAILURE;
+        }
 
         setOutput("beer_frames", beers);
+        RCLCPP_INFO(rclcpp::get_logger("ConditionBeerPresent"), "Found %zu beer frames", beers.size());
         return BT::NodeStatus::SUCCESS;
     }
 

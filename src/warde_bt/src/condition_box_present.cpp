@@ -15,13 +15,15 @@ namespace warde_bt
     {
         try
         {
-            buffer_->lookupTransform("world", "box_frame", rclcpp::Time(0, 0, RCL_ROS_TIME), rclcpp::Duration::from_seconds(0.1));
+            buffer_->lookupTransform("odom", "box_frame", rclcpp::Time(0, 0, RCL_ROS_TIME), rclcpp::Duration::from_seconds(0.1));
 
             setOutput("box_frame", std::string("box_frame"));
+            RCLCPP_INFO(rclcpp::get_logger("ConditionBoxPresent"), "Found box frame");
             return BT::NodeStatus::SUCCESS;
         }
         catch (const tf2::TransformException &)
         {
+            RCLCPP_WARN(rclcpp::get_logger("ConditionBoxPresent"), "No box frame found");
             return BT::NodeStatus::FAILURE;
         }
     }
