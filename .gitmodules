@@ -10,6 +10,3 @@
 [submodule "src/ROS2_4wheel_autonomous_robot"]
 	path = src/ROS2_4wheel_autonomous_robot
 	url = https://github.com/wgtayar/ROS2_4wheel_autonomous_robot.git
-[submodule "extern/BehaviorTree.CPP"]
-	path = extern/BehaviorTree.CPP
-	url = https://github.com/BehaviorTree/BehaviorTree.CPP.git
