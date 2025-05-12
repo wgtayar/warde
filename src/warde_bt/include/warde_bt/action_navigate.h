@@ -3,7 +3,8 @@
 
 #include <behaviortree_cpp_v3/action_node.h>
 #include <rclcpp/rclcpp.hpp>
-#include <robot_nav/srv/navigate.hpp>
+#include <rclcpp_action/rclcpp_action.hpp>
+#include <robot_nav/action/navigate.hpp>
 
 namespace warde_bt
 {
@@ -11,14 +12,19 @@ namespace warde_bt
     class ActionNavigate : public BT::StatefulActionNode
     {
     public:
-        ActionNavigate(const std::string &name, const BT::NodeConfiguration &config);
+        using Navigate = robot_nav::action::Navigate;
+        using GoalHandle = rclcpp_action::ClientGoalHandle<Navigate>;
+        using WrappedResult =
+            typename rclcpp_action::Client<Navigate>::WrappedResult;
+
+        ActionNavigate(const std::string &name,
+                       const BT::NodeConfiguration &config);
 
         static BT::PortsList providedPorts()
         {
             return {
-                BT::InputPort<rclcpp::Node::SharedPtr>("ros_node"),
-                BT::InputPort<bool>("wander", "true=aimless wander; false=go to target_frame"),
-                BT::InputPort<std::string>("target_frame", "TF frame to navigate to")};
+                BT::InputPort<bool>("wander"),
+                BT::InputPort<std::string>("target_frame")};
         }
 
         BT::NodeStatus onStart() override;
@@ -27,11 +33,18 @@ namespace warde_bt
 
     private:
         rclcpp::Node::SharedPtr node_;
-        rclcpp::Client<robot_nav::srv::Navigate>::SharedPtr navigate_client_;
-        rclcpp::Client<robot_nav::srv::Navigate>::SharedFuture result_future_;
+        rclcpp_action::Client<Navigate>::SharedPtr client_;
+
+        std::shared_future<typename GoalHandle::SharedPtr> goal_handle_future_;
+        typename GoalHandle::SharedPtr goal_handle_;
+
+        std::shared_future<WrappedResult> result_future_;
+
+        bool wander_{true};
+        std::string target_;
         bool active_{false};
     };
 
-}
+} // namespace warde_bt
 
 #endif // WARDE_BT__ACTION_NAVIGATE_H_
