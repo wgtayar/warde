@@ -15,6 +15,7 @@ find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(std_srvs REQUIRED)
 # find_package(manipulation_msgs REQUIRED)
 find_package(robot_nav REQUIRED)
+find_package(rclcpp_action REQUIRED)
 
 
 include_directories(include
@@ -48,6 +49,7 @@ ament_target_dependencies(test_conditions
   tf2_ros
   ament_index_cpp
   robot_nav
+  rclcpp_action
 )
 
 ament_target_dependencies(warde_bt_main
@@ -56,6 +58,7 @@ ament_target_dependencies(warde_bt_main
   tf2_ros
   ament_index_cpp
   robot_nav
+  rclcpp_action
 )
 
 # !!!!!!!!!!!!!!!!!!!!!!! also add manipulation_msgs later !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -90,6 +93,7 @@ ament_target_dependencies(bt_navigate
   std_srvs
   behaviortree_cpp_v3
   robot_nav
+  rclcpp_action
 )
 
 install(TARGETS bt_get_closest_beer
