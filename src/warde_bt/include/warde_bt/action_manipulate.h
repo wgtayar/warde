@@ -36,7 +36,7 @@ namespace warde_bt
 
             RCLCPP_INFO(
                 rclcpp::get_logger("ActionManipulate"),
-                "[%s] manipulation=%s, pre=\'%s\', target=\'%s\' → SUCCESS",
+                "[%s] manipulation=%s, pre=\'%s\', target=\'%s\' --> SUCCESS",
                 name().c_str(),
                 manipulation.c_str(), pre.c_str(), target.c_str());
 
