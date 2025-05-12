@@ -1,5 +1,4 @@
 #include "warde_bt/action_navigate.h"
-#include <behaviortree_cpp_v3/bt_factory.h>
 #include <chrono>
 
 using namespace std::chrono_literals;
@@ -11,12 +10,18 @@ namespace warde_bt
         const BT::NodeConfiguration &config)
         : BT::StatefulActionNode(name, config)
     {
-        node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("warde_bt_main_node");
-        navigate_client_ = node_->create_client<robot_nav::srv::Navigate>("navigate", rmw_qos_profile_services_default);
     }
 
     BT::NodeStatus ActionNavigate::onStart()
     {
+        getInput("ros_node", node_);
+
+        if (!navigate_client_)
+        {
+            navigate_client_ = node_->create_client<robot_nav::srv::Navigate>(
+                "navigate", rmw_qos_profile_services_default);
+        }
+
         if (!navigate_client_->wait_for_service(1s))
         {
             RCLCPP_ERROR(node_->get_logger(), "navigate service unavailable");
@@ -33,25 +38,27 @@ namespace warde_bt
         req->wander = wander;
         req->target_frame = target;
 
-        auto result_future = navigate_client_->async_send_request(req);
-        auto status = rclcpp::spin_until_future_complete(node_, result_future);
+        auto result_future_ = navigate_client_->async_send_request(req);
 
-        if (status == rclcpp::FutureReturnCode::SUCCESS && result_future.get()->success)
-        {
-            return BT::NodeStatus::SUCCESS;
-        }
-        else
-        {
-            RCLCPP_ERROR(node_->get_logger(), "navigate call failed or timed out");
-            return BT::NodeStatus::FAILURE;
-        }
+        return BT::NodeStatus::RUNNING;
     }
 
     BT::NodeStatus ActionNavigate::onRunning()
     {
+        if (!result_future_.valid())
+        {
+            return BT::NodeStatus::FAILURE;
+        }
+
+        if (result_future_.wait_for(0s) == std::future_status::ready)
+        {
+            auto res = result_future_.get();
+            return (res->success ? BT::NodeStatus::SUCCESS
+                                 : BT::NodeStatus::FAILURE);
+        }
+
         return BT::NodeStatus::RUNNING;
     }
-
     void ActionNavigate::onHalted()
     {
         if (active_)
@@ -64,8 +71,3 @@ namespace warde_bt
         }
     }
 }
-
-// BT_REGISTER_NODES(factory)
-// {
-//     factory.registerNodeType<warde_bt::ActionNavigate>("ActionNavigate");
-// }

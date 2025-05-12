@@ -1,5 +1,5 @@
 <root main_tree_to_execute="MainTree">
-    <BehaviorTree ID="MainTree">
+    <BehaviorTree ID="MainTree" shared_blackboard="true">
         <!-- infinite loop -->
         <DecoratorLoop num_cycles="-1">
             <FallbackNoMemory name="MissionFallback">
@@ -8,49 +8,36 @@
                 <ReactiveSequence name="CheckAndFetch">
                     <ConditionBoxPresent name="BoxPresent" box_frame="{box_frame}" />
                     <ConditionBeerPresent name="BeerPresent" beer_frames="{beer_frames}" />
-                    <ActionGetClosestBeer
-                        name="ChooseBeer"
-                        beer_frames="{beer_frames}"
+                    <ActionGetClosestBeer name="ChooseBeer" beer_frames="{beer_frames}"
                         target_beer_frame="{target_beer_frame}" />
-                    <SubTree ID="GraspBeer" />
-                    <SubTree ID="PlaceBeer" />
+                    <SubTree ID="GraspBeer" shared_blackboard="true" />
+                    <SubTree ID="PlaceBeer" shared_blackboard="true" />
                 </ReactiveSequence>
 
                 <!-- fallback to wandering if sequence fails -->
-                <ActionNavigate
-                    name="Wander"
-                    wander="true"
-                    target_frame="" />
+                <ActionNavigate name="Wander" ros_node="{ros_node}" wander="true" target_frame="" />
 
             </FallbackNoMemory>
         </DecoratorLoop>
     </BehaviorTree>
 
     <!-- GraspBeer Subtree -->
-    <BehaviorTree ID="GraspBeer">
+    <BehaviorTree ID="GraspBeer" shared_blackboard="true">
         <Sequence name="GraspBeerSeq">
-            <ActionNavigate
-                name="NavToBeerParking"
-                wander="false"
+            <ActionNavigate name="NavToBeerParking" ros_node="{ros_node}" wander="false"
                 target_frame="{target_beer_frame}_grasp_parking" />
-            <ActionManipulate
-                name="PickBeer"
-                manipulation="pick"
+            <ActionManipulate name="PickBeer" manipulation="pick"
                 pre_target_frame="{target_beer_frame}_pregrasp"
                 target_frame="{target_beer_frame}" />
         </Sequence>
     </BehaviorTree>
 
     <!-- PlaceBeer Subtree -->
-    <BehaviorTree ID="PlaceBeer">
+    <BehaviorTree ID="PlaceBeer" shared_blackboard="true">
         <Sequence name="PlaceBeerSeq">
-            <ActionNavigate
-                name="NavToBoxParking"
-                wander="false"
+            <ActionNavigate name="NavToBoxParking" ros_node="{ros_node}" wander="false"
                 target_frame="{box_frame}_place_parking" />
-            <ActionManipulate
-                name="PlaceBeer"
-                manipulation="place"
+            <ActionManipulate name="PlaceBeer" manipulation="place"
                 pre_target_frame="{box_frame}_preplace"
                 target_frame="{box_frame}" />
         </Sequence>

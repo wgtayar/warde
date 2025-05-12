@@ -26,13 +26,9 @@ int main(int argc, char **argv)
     rclcpp::executors::SingleThreadedExecutor exec;
     exec.add_node(node);
 
-    auto bb = BT::Blackboard::create();
-    bb->set("warde_bt_main_node", node);
-
-    // dummy navigate service for ActionNavigate
     using NavigateReq = robot_nav::srv::Navigate::Request;
     using NavigateRes = robot_nav::srv::Navigate::Response;
-    auto nav_svc = node->create_service<robot_nav::srv::Navigate>(
+    node->create_service<robot_nav::srv::Navigate>(
         "navigate",
         [&](std::shared_ptr<NavigateReq>, std::shared_ptr<NavigateRes> res)
         {
@@ -40,11 +36,13 @@ int main(int argc, char **argv)
             res->message = "ok";
         });
 
+    auto bb = BT::Blackboard::create();
+    bb->set("ros_node", node);
+
     BT::BehaviorTreeFactory factory;
 
     factory.registerNodeType<BT::RepeatNode>("DecoratorLoop");
     factory.registerNodeType<BT::ReactiveFallback>("FallbackNoMemory");
-
     factory.registerNodeType<warde_bt::ConditionBoxPresent>("ConditionBoxPresent");
     factory.registerNodeType<warde_bt::ConditionBeerPresent>("ConditionBeerPresent");
     factory.registerNodeType<warde_bt::ActionGetClosestBeer>("ActionGetClosestBeer");
@@ -52,12 +50,11 @@ int main(int argc, char **argv)
     factory.registerNodeType<warde_bt::ActionManipulate>("ActionManipulate");
 
     auto pkg_share = ament_index_cpp::get_package_share_directory("warde_bt");
-    std::string xml_file = pkg_share + "/config/warde_tree.xml";
+    auto xml_file = pkg_share + "/config/warde_tree.xml";
     RCLCPP_INFO(node->get_logger(), "Loading BT from: %s", xml_file.c_str());
 
     factory.registerBehaviorTreeFromFile(xml_file);
-
-    auto tree = factory.createTreeFromFile(xml_file, bb);
+    auto tree = factory.createTree("MainTree", bb);
 
     rclcpp::Rate loop_rate(10);
     while (rclcpp::ok())

@@ -16,6 +16,7 @@ namespace warde_bt
         static BT::PortsList providedPorts()
         {
             return {
+                BT::InputPort<rclcpp::Node::SharedPtr>("ros_node"),
                 BT::InputPort<bool>("wander", "true=aimless wander; false=go to target_frame"),
                 BT::InputPort<std::string>("target_frame", "TF frame to navigate to")};
         }
@@ -27,6 +28,7 @@ namespace warde_bt
     private:
         rclcpp::Node::SharedPtr node_;
         rclcpp::Client<robot_nav::srv::Navigate>::SharedPtr navigate_client_;
+        rclcpp::Client<robot_nav::srv::Navigate>::SharedFuture result_future_;
         bool active_{false};
     };
 
