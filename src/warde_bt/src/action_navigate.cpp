@@ -11,7 +11,7 @@ namespace warde_bt
         const BT::NodeConfiguration &config)
         : BT::StatefulActionNode(name, config)
     {
-        node_ = rclcpp::Node::make_shared("bt_navigate_client");
+        node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("warde_bt_main_node");
         navigate_client_ = node_->create_client<robot_nav::srv::Navigate>("navigate", rmw_qos_profile_services_default);
     }
 
