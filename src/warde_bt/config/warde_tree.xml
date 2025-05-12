@@ -1,0 +1,28 @@
+<root main_tree_to_execute="MainTree">
+    <BehaviorTree ID="MainTree">
+        <!-- loop mission forever -->
+        <DecoratorLoop num_cycles="-1">
+            <Sequence name="MissionSequence">
+
+                <ConditionBoxPresent name="BoxPresent" box_frame="{box_frame}" />
+                <ConditionBeerPresent name="BeerPresent" beer_frames="{beer_frames}" />
+
+                <ActionGetClosestBeer name="ChooseBeer" beer_frames="{beer_frames}"
+                    target_beer_frame="{target_beer_frame}" />
+
+                <ActionNavigate name="NavToBeer" wander="false" target_frame="{target_beer_frame}" />
+                <ActionManipulate name="PickBeer" manipulation="pick"
+                    pre_target_frame="{target_beer_frame}_pregrasp"
+                    target_frame="{target_beer_frame}" />
+
+                <ActionNavigate name="NavToBox" wander="false" target_frame="{box_frame}" />
+                <ActionManipulate name="PlaceBeer" manipulation="place"
+                    pre_target_frame="{box_frame}_preplace"
+                    target_frame="{box_frame}" />
+
+                <ActionNavigate name="Wander" wander="true" target_frame="" />
+
+            </Sequence>
+        </DecoratorLoop>
+    </BehaviorTree>
+</root>

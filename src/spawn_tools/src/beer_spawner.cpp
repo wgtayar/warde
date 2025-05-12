@@ -73,7 +73,7 @@ void BeerSpawner::handle_spawn_beer(
 
     geometry_msgs::msg::TransformStamped t;
     t.header.stamp = now();
-    t.header.frame_id = "world";
+    t.header.frame_id = "odom";
     t.child_frame_id = request->entity_name + "_frame";
     t.transform.translation.x = request->x;
     t.transform.translation.y = request->y;
@@ -93,8 +93,6 @@ int main(int argc, char **argv)
     executor.add_node(node);
 
     executor.spin();
-
-    // rclcpp::spin(std::make_shared<BeerSpawner>());
 
     rclcpp::shutdown();
     return 0;

@@ -73,7 +73,7 @@ void BoxSpawner::handle_spawn_box(
 
     geometry_msgs::msg::TransformStamped t;
     t.header.stamp = now();
-    t.header.frame_id = "world";
+    t.header.frame_id = "odom";
     t.child_frame_id = request->entity_name + "_frame";
     t.transform.translation.x = request->x;
     t.transform.translation.y = request->y;
