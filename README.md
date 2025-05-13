@@ -1,4 +1,5 @@
-# WARDE: Wandering Autonomous Robot Donde Estas
+<h1 align="center">🌹🌹🌹 WARDE 🌹🌹🌹</h1>
+<h1 align="center">Wandering Autonomous Robot Donde Estas</h1>
 
 ### The Great MCE550 Project
 `Warde` is a fully-integrated ROS 2-based behavior tree demo that autonomously roams, finds beer cans, picks them up, and places them into a drop-box. It leverages Gazebo simulation, BehaviorTree.CPP, ROS 2 actions/services, and a simple tagging mechanism to avoid revisiting the same target.
@@ -112,6 +113,32 @@ Behind the scenes, this does:
 
 ---
 
+## Accessing Services
+
+You can call any ROS 2 service running in the container directly from your host shell or by opening a shell inside the container.
+
+### From the Host Shell
+
+Make sure you have sourced the workspace overlay on your host so ROS 2 recognizes your custom packages:
+
+```bash
+cd ~/Desktop/MCE550/warde
+source install/setup.bash
+ros2 service list
+ros2 service call /spawn_beer spawn_tools/srv/SpawnBeer   "{entity_name: 'beer2', x: 2.0, y: 3.0, z: 0.25}"
+```
+
+### From Inside the Container
+
+```bash
+docker exec -it warde_ws bash
+source /ros2_ws/install/setup.bash
+ros2 service list
+ros2 service call /spawn_box spawn_tools/srv/SpawnBeer   "{entity_name: 'box1', x: 0.0, y: 0.0, z: 0.0}"
+```
+
+---
+
 ## Best Practices
 
 - Keep ROS 2 packages minimal and declare all `<depend>` tags  
@@ -131,4 +158,4 @@ Behind the scenes, this does:
 
 ---
 
-*Enjoy building and wandering with WARDE!*  
+*Enjoy building and wandering with WARDE!*
