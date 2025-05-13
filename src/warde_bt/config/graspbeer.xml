@@ -1,0 +1,11 @@
+<root>
+    <BehaviorTree ID="GraspBeer" shared_blackboard="true">
+        <Sequence name="GraspBeerSeq">
+            <ActionNavigate name="NavToBeerParking" wander="false"
+                target_frame="{target_beer_frame}_grasp_parking" />
+            <ActionManipulate name="PickBeer" manipulation="pick"
+                pre_target_frame="{target_beer_frame}_pregrasp"
+                target_frame="{target_beer_frame}" />
+        </Sequence>
+    </BehaviorTree>
+</root>
