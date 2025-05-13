@@ -2,11 +2,11 @@ version: "3.8"
 
 services:
   warde:
-    image: warde_ws:humble # IMPORTANT: ensure you have built the warde image via `docker build`
-    container_name: warde_ws
     build:
       context: .
       dockerfile: Dockerfile
+    image: warde_ws:humble
+    container_name: warde_ws
     network_mode: host
     environment:
       - DISPLAY=${DISPLAY}
@@ -15,4 +15,8 @@ services:
       - ./src:/ros2_ws/src
       - ./models:/ros2_ws/models
     command: >
-      bash -lc "ros2 launch warde_bt launch_all.launch.py         world:=$(ros2 pkg prefix robot_description)/models/myWorld/boxes_world.sdf         use_sim_time:=true         rviz_config_file:=$(ros2 pkg prefix robot_description)/rviz/sim.config.rviz"
+      bash -lc "source /ros2_ws/install/setup.bash && \
+      ros2 launch warde_bt launch_all.launch.py \
+        world:=$(ros2 pkg prefix robot_description)/models/myWorld/boxes_world.sdf \
+        use_sim_time:=true \
+        rviz_config_file:=$(ros2 pkg prefix robot_description)/rviz/sim.config.rviz"
