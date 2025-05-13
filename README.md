@@ -88,7 +88,8 @@ Behind the scenes, this does:
    - `ActionGetClosestBeer`, `ActionNavigate`, `ActionManipulate`  
    - Fallback to wandering on any failure, loop indefinitely.  
 
-![warde in action](https://github.com/wgtayar/warde/blob/main/Screenshots/warde_pt1.png)
+![warde in action1](https://github.com/wgtayar/warde/blob/main/Screenshots/warde_pt1.png)
+![warde in action2](https://github.com/wgtayar/warde/blob/main/Screenshots/warde_pt2.png)
 
 ---
 
