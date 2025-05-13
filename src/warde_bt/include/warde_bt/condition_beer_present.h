@@ -23,6 +23,8 @@ namespace warde_bt
 
         BT::NodeStatus tick() override;
 
+        static std::vector<std::string> picked_beers_;
+
     private:
         std::shared_ptr<tf2_ros::Buffer> buffer_;
         std::shared_ptr<tf2_ros::TransformListener> listener_;

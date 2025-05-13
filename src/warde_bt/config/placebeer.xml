@@ -1,0 +1,11 @@
+<root>
+    <BehaviorTree ID="PlaceBeer" shared_blackboard="true">
+        <Sequence name="PlaceBeerSeq">
+            <ActionNavigate name="NavToBoxParking" wander="false"
+                target_frame="{box_frame}_place_parking" />
+            <ActionManipulate name="PlaceBeer" manipulation="place"
+                pre_target_frame="{box_frame}_preplace"
+                target_frame="{box_frame}" />
+        </Sequence>
+    </BehaviorTree>
+</root>

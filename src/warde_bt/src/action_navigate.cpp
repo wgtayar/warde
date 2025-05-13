@@ -1,4 +1,5 @@
 #include "warde_bt/action_navigate.h"
+#include "warde_bt/condition_beer_present.h"
 
 using namespace std::chrono_literals;
 
@@ -78,7 +79,17 @@ namespace warde_bt
         {
             auto wrapped = result_future_.get();
             active_ = false;
-            return wrapped.result->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+
+            if (!wander_ && wrapped.result->success && target_.rfind("beer", 0) == 0)
+            {
+                ConditionBeerPresent::picked_beers_.push_back(target_);
+                RCLCPP_INFO(node_->get_logger(),
+                            "Tagged beer '%s' as picked", target_.c_str());
+            }
+
+            return wrapped.result->success
+                       ? BT::NodeStatus::SUCCESS
+                       : BT::NodeStatus::FAILURE;
         }
 
         return BT::NodeStatus::RUNNING;
