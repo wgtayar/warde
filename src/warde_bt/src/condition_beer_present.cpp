@@ -4,6 +4,8 @@
 namespace warde_bt
 {
 
+    std::vector<std::string> ConditionBeerPresent::picked_beers_;
+
     ConditionBeerPresent::ConditionBeerPresent(const std::string &name, const BT::NodeConfiguration &config) : BT::ConditionNode(name, config)
     {
         auto clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
@@ -18,7 +20,12 @@ namespace warde_bt
         for (auto &f : frames)
         {
             if (f.rfind("beer", 0) == 0)
-                beers.push_back(f);
+            {
+                if (std::find(picked_beers_.begin(), picked_beers_.end(), f) == picked_beers_.end())
+                {
+                    beers.push_back(f);
+                }
+            }
         }
 
         if (beers.empty())
