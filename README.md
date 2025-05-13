@@ -88,6 +88,8 @@ Behind the scenes, this does:
    - `ActionGetClosestBeer`, `ActionNavigate`, `ActionManipulate`  
    - Fallback to wandering on any failure, loop indefinitely.  
 
+![warde in action](https://github.com/wgtayar/warde/blob/main/Screenshots/warde_pt1.png)
+
 ---
 
 ## Containerized Run (Docker)
