@@ -104,10 +104,10 @@ Behind the scenes, this does:
     docker run -it --rm       --net=host       -e DISPLAY=$DISPLAY       -v /tmp/.X11-unix:/tmp/.X11-unix       warde_ws:humble
     ```
 
-3. (Optional) use `docker-compose.yml`:
+3. Alternatively, build and start all services with Docker Compose:
 
     ```bash
-    docker-compose up --build
+    xhost +local:root && docker-compose up --build
     ```
 
 ---
